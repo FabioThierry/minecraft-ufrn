@@ -1,0 +1,24 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Resources Packs UFRN",
+    "description": "Resources Packs UFRN RPG",
+    "uuid": "450f7b22-99b2-4a6b-be18-068b3c96fe9a",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 20, 30]
+  },
+  "modules": [
+    {
+      "description": "Resources Packs Modules UFRN",
+      "type": "resources",
+      "uuid": "4facbe2f-ec55-43d5-8a6d-91b37edbc9e8",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "7894aba9-6a90-41c5-b9ff-85ab2fadf005",
+      "version": [1, 0, 0]
+    }
+  ]
+}
