@@ -1,8 +1,8 @@
 {
   "format_version": 2,
   "header": {
-    "name": "My script behavior pack",
-    "description": "My behavior pack description",
+    "name": "Behavior Pack UFRN",
+    "description": "Behavior pack RPG UFRN",
     "uuid": "7894aba9-6a90-41c5-b9ff-85ab2fadf005",
     "version": [1, 0, 1],
     "min_engine_version": [1, 20, 30]
@@ -21,6 +21,10 @@
     {
       "module_name": "@minecraft/server",
       "version": "1.8.0"
+    },
+    {
+      "uuid": "450f7b22-99b2-4a6b-be18-068b3c96fe9a",
+      "version": [1, 0, 0]
     }
   ]
 }
