@@ -1,11 +1,5 @@
 # Projeto TypeScript Jogo UFRN no Minecraft
 
-### Recomendações de Extensões
-
-Prettier - Code formatter
-Blockception's Minecraft Bedrock Development
-Minecraft Bedrock Edition Debugger
-
 ## Prerequisitos
 
 #### Node.js
@@ -39,6 +33,12 @@ ou para manter a compilação sempre ativa
 ```powershell
 gulp watch
 ```
+
+### Recomendações de Extensões
+
+Prettier - Code formatter
+Blockception's Minecraft Bedrock Development
+Minecraft Bedrock Edition Debugger
 
 ### Projeto baseado na build de exemplo disponibilizada pela Microsoft
 

@@ -1,4 +1,4 @@
-import { system, world } from "@minecraft/server";
+import { system } from "@minecraft/server";
 import { adicionarTagEntidade } from "./addtags";
 import { givePlayerElytra } from "./giveitems";
 import { rodarComando } from "./runcommands";
@@ -6,7 +6,7 @@ import { rodarComando } from "./runcommands";
 // Variaveis Globais
 const ENTIDADE_NOME: string = "will";
 const ENTIDADE_TAG: string = "quest.will";
-const START_TICK: number = 100;
+const START_TICK: number = 200;
 let curTick: number = 0;
 
 function gameTick() {
