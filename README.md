@@ -8,12 +8,16 @@ Instalar o node.js
 Abrir pasta do projeto
 executr os seguintes comandos
 
-```powershell
+```node
   npm i
 ```
 
-```powershell
+```node
   npm i gulp-cli --global
+```
+
+```node
+  npm i @minecraft/server@1.8.0
 ```
 
 ### IDE {vscode}
@@ -24,13 +28,19 @@ Executar os commandos para compilar para o minecraft
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-```powershell
+OU
+
+```bash
+chmod +x gulpfile.js
+```
+
+```powershell ou Bash
 gulp
 ```
 
 ou para manter a compilação sempre ativa
 
-```powershell
+```powershell ou Bash
 gulp watch
 ```
 
