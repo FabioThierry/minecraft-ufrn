@@ -1,1 +1,13 @@
-export { ENTIDADE_NOME, ENTIDADE_TAG, START_TICK } from "./glo-variaveis";
+export {
+  ENTIDADE_NOME,
+  ENTIDADE_TAG,
+  START_TICK,
+  ANGULO,
+  LESTE_AZIMUTE,
+  NORTE_AZIMUTE,
+  OESTE_AZIMUTE,
+  SUL_AZIMUTE,
+  ARRAY_ORIENTACOES,
+} from "./glo-variaveis";
+
+export { X_ROSA_DOS_VENTOS, Y_ROSA_DOS_VENTOS, Z_ROSA_DOS_VENTOS, ROSA_DOS_VENTOS } from "./quest2/variaveis";
