@@ -10,4 +10,4 @@ export {
   ARRAY_ORIENTACOES,
 } from "./glo-variaveis";
 
-export { X_ROSA_DOS_VENTOS, Y_ROSA_DOS_VENTOS, Z_ROSA_DOS_VENTOS, ROSA_DOS_VENTOS } from "./quest2/variaveis";
+export { X_ROSA_DOS_VENTOS, Y_ROSA_DOS_VENTOS, Z_ROSA_DOS_VENTOS, ROSA_DOS_VENTOS } from "./quest1/variaveis";

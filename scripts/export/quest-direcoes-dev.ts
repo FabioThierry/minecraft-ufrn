@@ -6,9 +6,18 @@ import {
   ROSA_DOS_VENTOS,
   ARRAY_ORIENTACOES,
 } from "../global/index";
-import { EntityQueryOptions, Vector2, Vector3, world, TeleportOptions } from "@minecraft/server";
+import {
+  EntityQueryOptions,
+  Vector2,
+  Vector3,
+  world,
+  TeleportOptions,
+  system,
+  TicksPerSecond,
+} from "@minecraft/server";
 
 // DECLARAÇÃO DE VARIAVEIS
+let questEtapas = 0;
 const tpVector2: Vector2 = {
   x: NORTE_AZIMUTE,
   y: 180,
@@ -23,51 +32,83 @@ const btnStartQuest1Location: Vector3 = {
   z: 322,
 };
 
+const esperar1segundo = TicksPerSecond * 1;
+const tagQuest = "tagQuest1";
+
 // TODO REMOVE HARDCODE
 export function questDirecoesDesafio() {
+  //Filtragem para selecionar apenas o jogador que possuir a tag da missão que será realizada
   world.afterEvents.buttonPush.subscribe((botao) => {
     let playerPress = botao.dimension.getPlayers();
     let playerFilter = playerPress.filter((data) => {
       const tagsGet = data.getTags();
-      return tagsGet.find((tag) => tag == "tagQuest1") !== undefined;
+      return tagsGet.find((tag) => tag == tagQuest) !== undefined;
     });
-
     let jG = playerFilter[0];
     let localizacaobotao = botao.block.location;
     // console.warn(`${localizacaobotao.x} ${localizacaobotao.y} ${localizacaobotao.z}`);
+
+    //* Funções para criar Randomizar a direção dos jogadores e Resetar o jogador ao centro da rosa dos ventos
     function randomAzimute<T>(arr: T[]): number {
       return Math.floor(Math.random() * arr.length);
     }
-    // let randomAz = ARRAY_ORIENTACOES[randomAzimute(ARRAY_ORIENTACOES)];
-    // console.warn(randomAz);
     function resetCentro() {
       azimute.rotation = { x: 0, y: ARRAY_ORIENTACOES[randomAzimute(ARRAY_ORIENTACOES)] };
       botao.source.teleport(ROSA_DOS_VENTOS, azimute);
     }
+    //TODO Adicionar mensagem para aparecer nas mensagens para o jogador
 
-    /// *TELEPORT
+    /// * TELEPORTS
     if (jG !== undefined) {
+      //Verificador de Botão inicial da Missão
       if (
         localizacaobotao.x === btnStartQuest1Location.x &&
         localizacaobotao.y === btnStartQuest1Location.y &&
         localizacaobotao.z === btnStartQuest1Location.z
       ) {
-        console.warn("Iniciando Missão Quest1");
-        resetCentro();
-      } else if (localizacaobotao.x === 315 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+        jG.runCommand(`/title @s[tag=${tagQuest}] title Quest Direções`);
+        // jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Quest Direções`);
+        jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Iniciando desafio em 3 ...`);
+        system.runTimeout(() => {
+          jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 2 ...`);
+          system.runTimeout(() => {
+            jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 1 ...`);
+            system.runTimeout(() => {
+              jG.runCommand(`/title @s[tag=${tagQuest}] title N`);
+              jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Aperte o botão para direção NORTE`);
+              resetCentro();
+            }, esperar1segundo);
+          }, esperar1segundo);
+        }, esperar1segundo);
+      } else {
+        console.error("O botão não foi encontrado, corrija a localização da variavel do tipo Vector3");
+      }
+
+      // NORTE
+      if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 309) {
+        // world.sendMessage("Apertou o Botão da direção: NORTE");
+        jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Você apertou o botão da direção: NORTE`);
+        system.runTimeout(() => {
+          resetCentro();
+        }, esperar1segundo);
+      }
+      // Leste
+      if (localizacaobotao.x === 315 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
         world.sendMessage("Apertou o Botão da direção: LESTE");
         resetCentro();
-      } else if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 319) {
+        if (questEtapas === 0) {
+          world.sendMessage("Vc apertou o botão correto");
+        }
+      }
+      // SUL
+      if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 319) {
         world.sendMessage("Apertou o Botão da direção: SUL");
         resetCentro();
-      } else if (localizacaobotao.x === 305 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+      }
+      // OESTE
+      if (localizacaobotao.x === 305 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
         world.sendMessage("Apertou o Botão da direção: OESTE");
         resetCentro();
-      } else if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 309) {
-        world.sendMessage("Apertou o Botão da direção: NORTE");
-        resetCentro();
-      } else {
-        console.error("botao nao foi encontrado");
       }
     } else {
       console.error("Não Foi possivel selecionar o jogador");
