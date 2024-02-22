@@ -1,6 +1,6 @@
 import { system } from "@minecraft/server";
 import { ENTIDADE_NOME, START_TICK, ENTIDADE_TAG } from "../global/index";
-import { adicionarTagEntidade, givePlayerElytra, rodarComando, spawnNPC } from "../functions/index";
+import { adicionarTagEntidade, givePlayerElytra, rodarComando, spawnNPC } from "../global/functions/index";
 
 let curTick: number = 0;
 export function gameTick() {

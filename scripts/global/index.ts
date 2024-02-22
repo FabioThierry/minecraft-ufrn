@@ -9,5 +9,3 @@ export {
   SUL_AZIMUTE,
   ARRAY_ORIENTACOES,
 } from "./glo-variaveis";
-
-export { X_ROSA_DOS_VENTOS, Y_ROSA_DOS_VENTOS, Z_ROSA_DOS_VENTOS, ROSA_DOS_VENTOS } from "./quest1/variaveis";

@@ -1,11 +1,5 @@
-import {
-  NORTE_AZIMUTE,
-  SUL_AZIMUTE,
-  LESTE_AZIMUTE,
-  OESTE_AZIMUTE,
-  ROSA_DOS_VENTOS,
-  ARRAY_ORIENTACOES,
-} from "../global/index";
+import { NORTE_AZIMUTE, SUL_AZIMUTE, ARRAY_ORIENTACOES } from "../../global/index";
+import { ROSA_DOS_VENTOS } from "./quest-01-variables";
 import {
   EntityQueryOptions,
   Vector2,
@@ -97,18 +91,6 @@ export function questDirecoesDesafio() {
         jG.runCommand(`/title @s[tag=${tagQuest}] title Quest Direções`);
         // jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Quest Direções`);
         jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Iniciando desafio em 3 ...`);
-        // TODO tentar diminuir esse código com um loop
-        //? system.runTimeout(() => {
-        //?   jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 2 ...`);
-        //?   system.runTimeout(() => {
-        //?     jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 1 ...`);
-        //?     system.runTimeout(() => {
-        //?       oritentacao = "NORTE";
-        //?       newDirectionMessage();
-        //?       resetCentro();
-        //?     }, esperar1segundo);
-        //?   }, esperar1segundo);
-        //? }, esperar1segundo);
         //Sequencia para executar mensagens mensagens a cada segundo
         function runSequence(steps: Step[], currentIndex: number): void {
           if (currentIndex < steps.length) {
