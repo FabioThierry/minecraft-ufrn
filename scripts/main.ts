@@ -5,4 +5,4 @@ import { questDirecoesDesafio } from "./quests/quest-01/quest-01-main"; //* Apen
 
 questDirecoesDesafio();
 mensagemQuebrarBloco();
-system.run(gameTick);
+// system.run(gameTick);

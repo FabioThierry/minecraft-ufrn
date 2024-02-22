@@ -1,143 +1,111 @@
-import { NORTE_AZIMUTE, SUL_AZIMUTE, ARRAY_ORIENTACOES } from "../../global/index";
-import { ROSA_DOS_VENTOS } from "./quest-01-variables";
 import {
-  EntityQueryOptions,
-  Vector2,
-  Vector3,
-  world,
-  TeleportOptions,
-  system,
-  TicksPerSecond,
-} from "@minecraft/server";
+  BTN_START_QUEST_01_LOCATION,
+  TAG_QUEST,
+  ESPERAR,
+  steps,
+  azimute,
+  BTN_NORTE,
+  BTN_LESTE,
+  BTN_OESTE,
+  BTN_SUL,
+} from "./quest-01-variables";
+import { Step } from "./quest-01-objetos";
+import { randomDirectionCardeais, newDirectionMessage, resetCentro } from "./quest-01-functions";
+import { Vector2, world, TeleportOptions, system, Vector3 } from "@minecraft/server";
 
 // DECLARAÇÃO DE VARIAVEIS
-const tpVector2: Vector2 = {
-  x: NORTE_AZIMUTE,
-  y: 180,
-};
-const azimute: TeleportOptions = {
-  rotation: { x: 0, y: SUL_AZIMUTE },
-};
 
-const btnStartQuest1Location: Vector3 = {
-  x: 321,
-  y: 60,
-  z: 322,
-};
-
-const esperar1segundo = TicksPerSecond * 1;
-const tagQuest = "tagQuest1";
-interface Step {
-  action: number | null;
-  wait: number;
-}
 // TODO REMOVE HARDCODE
 export function questDirecoesDesafio() {
   var oritentacao: string = "nao";
-  //Filtragem para selecionar apenas o jogador que possuir a tag da missão que será realizada
+  // Filtragem para selecionar apenas o jogador que possuir a tag da missão que será realizada
+  // Apertar qualquer botão => Selecionar apenas um jogador com a tag da quest => Pegar a localizacao do botao
   world.afterEvents.buttonPush.subscribe((botao) => {
     let playerPress = botao.dimension.getPlayers();
     let playerFilter = playerPress.filter((data) => {
       const tagsGet = data.getTags();
-      return tagsGet.find((tag) => tag == tagQuest) !== undefined;
+      return tagsGet.find((tag) => tag === TAG_QUEST) !== undefined;
     });
     let jG = playerFilter[0];
     let localizacaobotao = botao.block.location;
-    // console.warn(`${localizacaobotao.x} ${localizacaobotao.y} ${localizacaobotao.z}`);
 
-    //* Funções para criar Randomizar a direção dos jogadores e Resetar o jogador ao centro da rosa dos ventos
-    function randomAzimute<T>(arr: T[]): number {
-      return Math.floor(Math.random() * arr.length);
-    }
-    function resetCentro() {
-      azimute.rotation = { x: 0, y: ARRAY_ORIENTACOES[randomAzimute(ARRAY_ORIENTACOES)] };
-      botao.source.teleport(ROSA_DOS_VENTOS, azimute);
-    }
-
-    //* Randomizar escolha do da direção
-    function randomDirection() {
-      let cardeais = ["NORTE", "SUL", "LESTE", "OESTE"];
-      let numero = Math.floor(Math.random() * cardeais.length);
-      return cardeais[numero];
-    }
-    //* Funcao para adicionar nova mensagem
-    function newDirectionMessage() {
-      jG.runCommand(`/title @s[tag=${tagQuest}] title ${oritentacao}`);
-      jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Aperte o botão para direção ${oritentacao}`);
-    }
-    //* Funcao acertou o botao
-    function correctDirection() {
-      oritentacao = randomDirection();
-      jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Parabéns!\nVocê acertou a direção`);
+    //* Declaração de funções para acertar do que fazer quando acertar ou errar
+    function correctDirection(): void {
+      oritentacao = randomDirectionCardeais();
+      jG.runCommand(`/title @s[tag=${TAG_QUEST}] actionbar Parabéns!\nVocê acertou a direção`);
       system.runTimeout(() => {
-        newDirectionMessage();
-        resetCentro();
-      }, esperar1segundo);
+        newDirectionMessage(jG, TAG_QUEST, oritentacao);
+        resetCentro(azimute, botao);
+      }, ESPERAR);
     }
     function wrongDirection() {
       jG.runCommand(
-        `/title @s[tag=${tagQuest}] actionbar Que pena!\nVocê apertou o botão da direção errada\nA direção correta é o ${oritentacao}`
+        `/title @s[tag=${TAG_QUEST}] actionbar Que pena!\nVocê apertou o botão da direção errada\nA direção correta é o ${oritentacao}`
       );
     }
 
-    /// * TELEPORTS
+    // * Verificar Botões
     if (jG !== undefined) {
-      //Verificador de Botão inicial da Missão
+      // Verificador de Botão inicial da Missão
       if (
-        localizacaobotao.x === btnStartQuest1Location.x &&
-        localizacaobotao.y === btnStartQuest1Location.y &&
-        localizacaobotao.z === btnStartQuest1Location.z
+        localizacaobotao.x === BTN_START_QUEST_01_LOCATION.x &&
+        localizacaobotao.y === BTN_START_QUEST_01_LOCATION.y &&
+        localizacaobotao.z === BTN_START_QUEST_01_LOCATION.z
       ) {
-        jG.runCommand(`/title @s[tag=${tagQuest}] title Quest Direções`);
-        // jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Quest Direções`);
-        jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Iniciando desafio em 3 ...`);
-        //Sequencia para executar mensagens mensagens a cada segundo
+        jG.runCommand(`/title @s[tag=${TAG_QUEST}] title Quest Direções`);
+        jG.runCommand(`/title @s[tag=${TAG_QUEST}] actionbar Iniciando desafio em 3 ...`);
+        // Função de sequencia de runTimeout para mostrar mensagens de texto no HUD
         function runSequence(steps: Step[], currentIndex: number): void {
           if (currentIndex < steps.length) {
             const step = steps[currentIndex];
             system.runTimeout(() => {
-              jG.runCommand(`/title @s[tag=${tagQuest}] actionbar ${step.action ?? ""} ...`);
+              jG.runCommand(`/title @s[tag=${TAG_QUEST}] actionbar ${step.action ?? ""} ...`);
               runSequence(steps, currentIndex + 1);
             }, step.wait);
           } else {
             oritentacao = "NORTE";
-            newDirectionMessage();
-            resetCentro();
+            newDirectionMessage(jG, TAG_QUEST, oritentacao);
+            resetCentro(azimute, botao);
           }
         }
-
-        const steps: Step[] = [
-          { action: 2, wait: esperar1segundo },
-          { action: 1, wait: esperar1segundo },
-          { action: null, wait: esperar1segundo }, // Ação nula, apenas espera
-        ];
-
         runSequence(steps, 0);
       }
-
-      // else {
-      // console.error("O botão não foi encontrado, corrija a localização da variavel do tipo Vector3");
-      // }
-
-      if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 309) {
+      // Verifiar botões das orientações espaciais
+      if (
+        localizacaobotao.x === BTN_NORTE.x &&
+        localizacaobotao.y === BTN_NORTE.y &&
+        localizacaobotao.z === BTN_NORTE.z
+      ) {
         if (oritentacao === "NORTE") {
           correctDirection();
         } else {
           wrongDirection();
         }
-      } else if (localizacaobotao.x === 315 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+      } else if (
+        localizacaobotao.x === BTN_LESTE.x &&
+        localizacaobotao.y === BTN_LESTE.y &&
+        localizacaobotao.z === BTN_LESTE.z
+      ) {
         if (oritentacao === "LESTE") {
           correctDirection();
         } else {
           wrongDirection();
         }
-      } else if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 319) {
+      } else if (
+        localizacaobotao.x === BTN_SUL.x &&
+        localizacaobotao.y === BTN_SUL.y &&
+        localizacaobotao.z === BTN_SUL.z
+      ) {
         if (oritentacao === "SUL") {
           correctDirection();
         } else {
           wrongDirection();
         }
-      } else if (localizacaobotao.x === 305 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+      } else if (
+        localizacaobotao.x === BTN_OESTE.x &&
+        localizacaobotao.y === BTN_OESTE.y &&
+        localizacaobotao.z === BTN_OESTE.z
+      ) {
         if (oritentacao === "OESTE") {
           correctDirection();
         } else {
@@ -145,38 +113,7 @@ export function questDirecoesDesafio() {
         }
       }
     } else {
-      console.error("Não Foi possivel selecionar o jogador");
+      console.error(`Não Foi possivel selecionar o jogador, vc não possui a tag ${TAG_QUEST}`);
     }
-
-    // console.warn(botao.source.typeId);
-    // console.warn("Função Quest Direções está rodando");
-
-    // * Filtragem do Jogador
-    // Selecionar todos os jogadores online
-    let players = world.getAllPlayers();
-    // Selecionar apenas os jogadores que possuem a tag "tagQuest1"
-    const jogador_filtrado = players.filter((jogador) => {
-      const tags = jogador.getTags();
-      return tags.find((tag) => tag === "tagQuest1") !== undefined;
-    });
-    let playerQuest = jogador_filtrado[0];
-
-    // console.warn(jogador_filtrado[0].id + "<= jogadores"); // Log
-
-    // Filtro para escolher o npc
-    const opcoes: EntityQueryOptions = {
-      families: ["npc"],
-      name: "will",
-    };
-
-    // Dar /tp no player com a quest
-    // let entidadeNpc = world.getDimension("overworld").getEntities(opcoes);
-    // console.warn(entidadeNpc.map((entidade) => entidade.nameTag));
-    // if (entidadeNpc !== undefined) {
-    //   //adicionar comando para o player realizar o teleport para o meio da rosa dos ventos
-    //   playerQuest.teleport({ x: X_ROSA_DOS_VENTOS, y: Y_ROSA_DOS_VENTOS, z: Z_ROSA_DOS_VENTOS }); //TODO Adicionar direction
-    // } else {
-    //   console.warn("O NPCs Will não está pronto!");
-    // }
   });
 }

@@ -1,3 +1,5 @@
+import { randomArray } from "./functions";
+
 export {
   ENTIDADE_NOME,
   ENTIDADE_TAG,
@@ -9,3 +11,5 @@ export {
   SUL_AZIMUTE,
   ARRAY_ORIENTACOES,
 } from "./glo-variaveis";
+
+export { randomArray } from "./functions/index";

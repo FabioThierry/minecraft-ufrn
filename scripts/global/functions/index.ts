@@ -7,3 +7,4 @@ export { adicionarTagEntidade } from "./fun-addtags";
 export { givePlayerElytra } from "./fun-giveitems";
 export { rodarComando } from "./fun-runcommands";
 export { spawnNPC } from "./fun-spawnentities";
+export { randomArray } from "./fun-randomarray";
