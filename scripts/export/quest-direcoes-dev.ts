@@ -17,7 +17,6 @@ import {
 } from "@minecraft/server";
 
 // DECLARAÇÃO DE VARIAVEIS
-let questEtapas = 0;
 const tpVector2: Vector2 = {
   x: NORTE_AZIMUTE,
   y: 180,
@@ -34,9 +33,13 @@ const btnStartQuest1Location: Vector3 = {
 
 const esperar1segundo = TicksPerSecond * 1;
 const tagQuest = "tagQuest1";
-
+interface Step {
+  action: number | null;
+  wait: number;
+}
 // TODO REMOVE HARDCODE
 export function questDirecoesDesafio() {
+  var oritentacao: string = "nao";
   //Filtragem para selecionar apenas o jogador que possuir a tag da missão que será realizada
   world.afterEvents.buttonPush.subscribe((botao) => {
     let playerPress = botao.dimension.getPlayers();
@@ -56,7 +59,32 @@ export function questDirecoesDesafio() {
       azimute.rotation = { x: 0, y: ARRAY_ORIENTACOES[randomAzimute(ARRAY_ORIENTACOES)] };
       botao.source.teleport(ROSA_DOS_VENTOS, azimute);
     }
-    //TODO Adicionar mensagem para aparecer nas mensagens para o jogador
+
+    //* Randomizar escolha do da direção
+    function randomDirection() {
+      let cardeais = ["NORTE", "SUL", "LESTE", "OESTE"];
+      let numero = Math.floor(Math.random() * cardeais.length);
+      return cardeais[numero];
+    }
+    //* Funcao para adicionar nova mensagem
+    function newDirectionMessage() {
+      jG.runCommand(`/title @s[tag=${tagQuest}] title ${oritentacao}`);
+      jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Aperte o botão para direção ${oritentacao}`);
+    }
+    //* Funcao acertou o botao
+    function correctDirection() {
+      oritentacao = randomDirection();
+      jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Parabéns!\nVocê acertou a direção`);
+      system.runTimeout(() => {
+        newDirectionMessage();
+        resetCentro();
+      }, esperar1segundo);
+    }
+    function wrongDirection() {
+      jG.runCommand(
+        `/title @s[tag=${tagQuest}] actionbar Que pena!\nVocê apertou o botão da direção errada\nA direção correta é o ${oritentacao}`
+      );
+    }
 
     /// * TELEPORTS
     if (jG !== undefined) {
@@ -69,46 +97,70 @@ export function questDirecoesDesafio() {
         jG.runCommand(`/title @s[tag=${tagQuest}] title Quest Direções`);
         // jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Quest Direções`);
         jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Iniciando desafio em 3 ...`);
-        system.runTimeout(() => {
-          jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 2 ...`);
-          system.runTimeout(() => {
-            jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 1 ...`);
+        // TODO tentar diminuir esse código com um loop
+        //? system.runTimeout(() => {
+        //?   jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 2 ...`);
+        //?   system.runTimeout(() => {
+        //?     jG.runCommand(`/title @s[tag=${tagQuest}] actionbar 1 ...`);
+        //?     system.runTimeout(() => {
+        //?       oritentacao = "NORTE";
+        //?       newDirectionMessage();
+        //?       resetCentro();
+        //?     }, esperar1segundo);
+        //?   }, esperar1segundo);
+        //? }, esperar1segundo);
+        //Sequencia para executar mensagens mensagens a cada segundo
+        function runSequence(steps: Step[], currentIndex: number): void {
+          if (currentIndex < steps.length) {
+            const step = steps[currentIndex];
             system.runTimeout(() => {
-              jG.runCommand(`/title @s[tag=${tagQuest}] title N`);
-              jG.runCommand(`/title @s[tag=${tagQuest}] subtitle Aperte o botão para direção NORTE`);
-              resetCentro();
-            }, esperar1segundo);
-          }, esperar1segundo);
-        }, esperar1segundo);
-      } else {
-        console.error("O botão não foi encontrado, corrija a localização da variavel do tipo Vector3");
+              jG.runCommand(`/title @s[tag=${tagQuest}] actionbar ${step.action ?? ""} ...`);
+              runSequence(steps, currentIndex + 1);
+            }, step.wait);
+          } else {
+            oritentacao = "NORTE";
+            newDirectionMessage();
+            resetCentro();
+          }
+        }
+
+        const steps: Step[] = [
+          { action: 2, wait: esperar1segundo },
+          { action: 1, wait: esperar1segundo },
+          { action: null, wait: esperar1segundo }, // Ação nula, apenas espera
+        ];
+
+        runSequence(steps, 0);
       }
 
-      // NORTE
+      // else {
+      // console.error("O botão não foi encontrado, corrija a localização da variavel do tipo Vector3");
+      // }
+
       if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 309) {
-        // world.sendMessage("Apertou o Botão da direção: NORTE");
-        jG.runCommand(`/title @s[tag=${tagQuest}] actionbar Você apertou o botão da direção: NORTE`);
-        system.runTimeout(() => {
-          resetCentro();
-        }, esperar1segundo);
-      }
-      // Leste
-      if (localizacaobotao.x === 315 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
-        world.sendMessage("Apertou o Botão da direção: LESTE");
-        resetCentro();
-        if (questEtapas === 0) {
-          world.sendMessage("Vc apertou o botão correto");
+        if (oritentacao === "NORTE") {
+          correctDirection();
+        } else {
+          wrongDirection();
         }
-      }
-      // SUL
-      if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 319) {
-        world.sendMessage("Apertou o Botão da direção: SUL");
-        resetCentro();
-      }
-      // OESTE
-      if (localizacaobotao.x === 305 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
-        world.sendMessage("Apertou o Botão da direção: OESTE");
-        resetCentro();
+      } else if (localizacaobotao.x === 315 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+        if (oritentacao === "LESTE") {
+          correctDirection();
+        } else {
+          wrongDirection();
+        }
+      } else if (localizacaobotao.x === 310 && localizacaobotao.y === 60 && localizacaobotao.z === 319) {
+        if (oritentacao === "SUL") {
+          correctDirection();
+        } else {
+          wrongDirection();
+        }
+      } else if (localizacaobotao.x === 305 && localizacaobotao.y === 60 && localizacaobotao.z === 314) {
+        if (oritentacao === "OESTE") {
+          correctDirection();
+        } else {
+          wrongDirection();
+        }
       }
     } else {
       console.error("Não Foi possivel selecionar o jogador");
