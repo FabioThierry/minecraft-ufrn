@@ -1,58 +1,55 @@
 import { Vector3, TicksPerSecond, TeleportOptions } from "@minecraft/server";
-import { SUL_AZIMUTE } from "../../global/index";
 
 import { Step } from "./quest-01-objetos";
 
-// Tempo de espera para cada nova mensagem de texto
-export const ESPERAR = TicksPerSecond * 1;
+// TEMPO DE ESPERA PARA CADA NOVA MENSAGEM DE TEXTO
+export const WAIT = TicksPerSecond * 1;
 
-// Tag para ser verificada
+// TAG PARA SER VERIFICADA
 export const TAG_QUEST = "Q01_DESAFIO";
 
-// Localização do botão que inicia a quest
+// LOCALIZAÇÃO DO BOTÃO QUE INICIA A QUEST
 export const BTN_START_QUEST_01_LOCATION: Vector3 = {
-  //TODO colocar em objetos
-  x: 321,
-  y: 60,
-  z: 322,
+  x: 327,
+  y: -13,
+  z: 294,
 };
-// Variaveis para o desafio da rosa dos ventos para a Quest Direções
-const X_ROSA_DOS_VENTOS = 310.5;
-const Y_ROSA_DOS_VENTOS = 60;
-const Z_ROSA_DOS_VENTOS = 314.5;
 
-// Objeto centro Rosa dos ventos
+// LOCALIZAÇÃO DO BLOCO NO CENTRO DA ROSA DOS VENTOS
 export const ROSA_DOS_VENTOS: Vector3 = {
-  //TODO colocar em objetos
-  x: X_ROSA_DOS_VENTOS,
-  y: Y_ROSA_DOS_VENTOS,
-  z: Z_ROSA_DOS_VENTOS,
+  x: 316.5,
+  y: -13,
+  z: 286.5,
 };
+// LOCALIZAÇÃO DO BOTÃO NORTE
 export const BTN_NORTE: Vector3 = {
-  x: 310,
-  y: 60,
-  z: 309,
+  x: 316,
+  y: -13,
+  z: 281,
 };
+// LOCALIZAÇÃO DO BOTÃO LESTE
 export const BTN_LESTE: Vector3 = {
-  x: 315,
-  y: 60,
-  z: 314,
+  x: 321,
+  y: -13,
+  z: 286,
 };
+// LOCALIZAÇÃO DO BOTÃO SUL
 export const BTN_SUL: Vector3 = {
-  x: 310,
-  y: 60,
-  z: 319,
+  x: 316,
+  y: -13,
+  z: 291,
 };
+// LOCALIZAÇÃO DO BOTÃO OESTE
 export const BTN_OESTE: Vector3 = {
-  x: 305,
-  y: 60,
-  z: 314,
+  x: 311,
+  y: -13,
+  z: 286,
 };
-
+// PASSOS PARA EXECUÇÃO DA FUNÇÃO DE EXIBIÇÃO DE MENSAGENS
 export const steps: Step[] = [
-  { action: 2, wait: ESPERAR },
-  { action: 1, wait: ESPERAR },
-  { action: null, wait: ESPERAR }, // Ação nula, apenas espera
+  { action: 2, wait: WAIT },
+  { action: 1, wait: WAIT },
+  { action: null, wait: WAIT },
 ];
 
 export const azimute: TeleportOptions = {
