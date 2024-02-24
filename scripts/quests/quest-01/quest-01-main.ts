@@ -11,21 +11,31 @@ import {
 } from "./quest-01-variables";
 import { Step } from "./quest-01-objetos";
 import { randomDirectionCardeais, newDirectionMessage, resetCentro } from "./quest-01-functions";
-import { world, system } from "@minecraft/server";
-
+import { world, system, Entity } from "@minecraft/server";
+// DECLARAÇÃO DE VARIAVEIS
+let player: Entity;
+let playerId: string;
+let currentPlayerId: string;
+let curretTag: string;
+let orientation: string;
 // * FUNÇÃO PRINCIPAL DO DESAFIO
 export function questDirecoesDesafio() {
-  var orientation: string = "";
   // FILTRAGEM PARA SELECIONAR APENAS O JOGADOR QUE POSSUIR A TAG DA MISSÃO QUE SERÁ REALIZADA
   // APERTAR QUALQUER BOTÃO -> SELECIONAR APENAS UM JOGADOR COM A TAG DA QUEST -> PEGAR A LOCALIZAÇÃO DO BOTÃO
   world.afterEvents.buttonPush.subscribe((btn) => {
-    let playersPressBtn = btn.dimension.getPlayers();
-    let playerFilter = playersPressBtn.filter((data) => {
-      let tag = data.getTags();
-      return tag.find((tagString) => tagString === TAG_QUEST) !== undefined;
-    });
-    let player = playerFilter[0];
+    // VARIAVEIS APÓS APERTAR O BOTÃO
+    playerId = btn.source.id;
+    player = btn.source;
+    currentPlayerId = btn.source.id;
     let btnLocation = btn.block.location;
+    // FILTRO PARA PEGAR A TAG
+    btn.source.getTags().filter((tag_string = TAG_QUEST) => {
+      return (curretTag = tag_string);
+    });
+    //? LOGS
+    //? console.warn(currentPlayerId + " <= playercurrent id");
+    //? console.warn(playerId + " <= player id");
+    //? console.warn(curretTag + " <= tag name ");
 
     //* FUNÇÕES
     function correctDirection(): void {
@@ -41,16 +51,15 @@ export function questDirecoesDesafio() {
         `/title @s[tag=${TAG_QUEST}] actionbar Que pena!\nVocê apertou o botão da direção errada\nA direção correta é o ${orientation}`
       );
     }
-
     // * VERIFICADORES DE LOCALIZAÇÃO DE BOTÃO
-    if (player !== undefined) {
+    // TODO RESOLVER PROBLEMA: JOGADORES PODEM INTERCALAR AO APERTAR OS BOTÕES
+    if (player !== undefined && playerId !== undefined && TAG_QUEST === curretTag) {
       // BOTÃO DE INICIO DA QUEST
       if (
         btnLocation.x === BTN_START_QUEST_01_LOCATION.x &&
         btnLocation.y === BTN_START_QUEST_01_LOCATION.y &&
         btnLocation.z === BTN_START_QUEST_01_LOCATION.z
       ) {
-        console.warn(player.name);
         player.runCommand(`/title @s[tag=${TAG_QUEST}] title Quest Direções`);
         player.runCommand(`/title @s[tag=${TAG_QUEST}] actionbar Iniciando desafio em 3 ...`);
         // FUNÇÃO PARA MOSTRAR SEQUÊNCIA DE MENSAGENS

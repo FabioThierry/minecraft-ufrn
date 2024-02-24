@@ -1,4 +1,4 @@
-import { ButtonPushAfterEvent, Player, TeleportOptions } from "@minecraft/server";
+import { ButtonPushAfterEvent, Entity, Player, TeleportOptions } from "@minecraft/server";
 import { ARRAY_ORIENTACOES, randomArray } from "../../global/index";
 import { ROSA_DOS_VENTOS } from "./quest-01-variables";
 
@@ -15,7 +15,7 @@ export function randomDirectionCardeais() {
   return cardeais[numero];
 }
 // FUNÇÃO PARA ADICIONAR UMA NOVA MENSAGEM
-export function newDirectionMessage(jogador: Player, tagquest: string, oritentacao: string) {
+export function newDirectionMessage(jogador: Entity, tagquest: string, oritentacao: string) {
   jogador.runCommand(`/title @s[tag=${tagquest}] title ${oritentacao}`);
   jogador.runCommand(`/title @s[tag=${tagquest}] subtitle Aperte o botão para direção ${oritentacao}`);
 }
