@@ -1,4 +1,4 @@
-import { Buttons } from "../interfaces/interfaces";
+import { Buttons } from "./interfaces/interfaces";
 import { Vector3 } from "@minecraft/server";
 
 export class SelectedButtons implements Buttons {

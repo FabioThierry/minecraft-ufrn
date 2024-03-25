@@ -1,4 +1,4 @@
-import { system, world, Player, Vector3 } from "@minecraft/server";
+import { system, world, Player, Vector3, ButtonPushAfterEvent } from "@minecraft/server";
 import { gameTick } from "./export/index";
 import {} from "./export/desenvolvimento"; //* Apenas para testes
 import { QuestDirecoesDesafio } from "./quests/quest-01/quest-01-main"; //* Apenas para testes
