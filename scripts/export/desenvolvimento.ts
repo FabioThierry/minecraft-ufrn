@@ -1,9 +1,28 @@
-import { world } from "@minecraft/server";
+import { Player, system, world } from "@minecraft/server";
 
-export function mensagemQuebrarBloco() {
-  // world.sendMessage("Hello, World!");
+const testeAsync = async () => {
+  console.log("teste");
+};
 
-  world.afterEvents.playerBreakBlock.subscribe(function callbak(dados) {
-    dados.player.runCommand(`/tell @s acabei de quebrar um bloco e recebi uma tag ${dados.player.addTag("vandalo")}`);
-  });
+const display_dialogue = async (dialogue: object, player: Player) => {
+  player.onScreenDisplay.setActionBar("TESTE  ");
+  system.runTimeout(() => {
+    player.onScreenDisplay.setActionBar("tESTE 2");
+    system.runTimeout(() => {
+      player.onScreenDisplay.setActionBar("tESTE3");
+    }, 20 * 5);
+  }, 20 * 5);
+
+  // await delay(3000);
+  // await delay(3000);
+};
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+let playerBtn = world.afterEvents.buttonPush.subscribe((event) => {
+  console.log(event);
+  event.block.x;
+});
+console.warn(playerBtn.name);
